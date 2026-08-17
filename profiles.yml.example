@@ -1,0 +1,19 @@
+# Copy this file to ~/.dbt/profiles.yml and fill in your values.
+# NEVER commit the real profiles.yml (it is in .gitignore).
+#
+# Where to find each value in Databricks Free Edition:
+#   host:      workspace URL, e.g. dbc-xxxxxxxx-xxxx.cloud.databricks.com (no https://)
+#   http_path: SQL Warehouses → your warehouse → Connection details → HTTP path
+#   token:     Settings → Developer → Access tokens → Generate new token
+
+uk_housing_lakehouse:
+  target: dev
+  outputs:
+    dev:
+      type: databricks
+      catalog: housing
+      schema: dev_nicholas        # your personal dev schema; CI and prod use their own
+      host: "{{ env_var('DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
+      threads: 4

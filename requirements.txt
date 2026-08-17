@@ -1,0 +1,7 @@
+# Transformation
+dbt-core>=1.9,<2.0
+dbt-databricks>=1.9
+
+# Linting / formatting (CI runs these too)
+sqlfluff>=3.0
+sqlfluff-templater-dbt>=3.0

@@ -1,0 +1,29 @@
+# dbt
+target/
+dbt_packages/
+logs/
+package-lock.yml
+
+# credentials — never commit these
+profiles.yml
+.env
+*.pem
+
+# python
+.venv/
+__pycache__/
+*.pyc
+
+# local data files (raw CSVs stay out of git)
+data/
+*.csv
+*.csv.gz
+*.zip
+
+# OS / editor
+.DS_Store
+.vscode/
+*.swp
+
+# Power BI local temp (commit the .pbix itself deliberately, not temp files)
+*.pbix.tmp
