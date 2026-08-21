@@ -1,5 +1,9 @@
 -- Phase 1: catalog structure for the medallion architecture.
--- Run once against the housing catalog. Idempotent - safe to re-run.
+-- Self-contained: creates the catalog, the three schemas and the landing volume.
+-- Idempotent - safe to re-run.
+
+CREATE CATALOG IF NOT EXISTS housing
+  COMMENT 'UK housing lakehouse. Medallion layout: bronze (raw) -> silver (dbt staging) -> gold (dbt marts).';
 
 CREATE SCHEMA IF NOT EXISTS housing.bronze
   COMMENT 'Raw data loaded as-is from the landing volume. No transformation, no typing.';
