@@ -3,6 +3,12 @@
 -- Source files have NO header row - column names come from the published
 -- schema at https://www.gov.uk/guidance/about-the-price-paid-data
 -- All columns land as STRING. Typing happens in silver (dbt staging).
+--
+-- Append-only, incremental. COPY INTO tracks loaded files BY NAME and skips a
+-- file it has seen before even if its contents changed - so the monthly
+-- re-publication of the current year's file must be uploaded under a new,
+-- date-stamped name (pp-2026_2026-09.csv). Bronze then holds every publication;
+-- silver dedupes on transaction_id keeping the latest _loaded_at. See ADR 005.
 
 CREATE TABLE IF NOT EXISTS housing.bronze.land_registry_price_paid (
   transaction_id     STRING,
@@ -25,8 +31,6 @@ CREATE TABLE IF NOT EXISTS housing.bronze.land_registry_price_paid (
   _loaded_at         TIMESTAMP
 )
 COMMENT 'Raw HM Land Registry Price Paid Data, yearly files. Loaded as-is, all STRING.';
-
-
 
 COPY INTO housing.bronze.land_registry_price_paid
 FROM (

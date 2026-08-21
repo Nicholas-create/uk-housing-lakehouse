@@ -12,7 +12,7 @@ An end-to-end analytics engineering project: UK open data ingested into a Databr
 |---|---|
 | Data platform | Databricks Free Edition (Unity Catalog, serverless SQL) |
 | Transformation | dbt Core (`dbt-databricks`) |
-| Version control & CI | GitHub, GitHub Actions, SQLFluff |
+| Version control & CI | GitHub (PR workflow, protected `main`); GitHub Actions + SQLFluff 🚧 planned |
 | BI | Power BI |
 
 ## Architecture
@@ -40,7 +40,7 @@ Contains HM Land Registry data © Crown copyright and database right 2026. This 
 ├── ingestion/          # Databricks-side: volume load scripts / notebooks (bronze)
 ├── models/             # dbt: staging (silver), intermediate, marts (gold)
 ├── docs/               # Architecture decisions, notes
-└── .github/workflows/  # CI: lint + dbt build on PR
+└── .github/workflows/  # 🚧 CI: lint + dbt build on PR (not yet added)
 ```
 
 ## Running locally
@@ -52,7 +52,15 @@ pip install -r requirements.txt
 dbt debug
 ```
 
+## Data quality findings
+
+Things the data told us that the documentation didn't. Each one shapes a modelling decision downstream.
+
+| # | Source | Finding | Consequence |
+|---|---|---|---|
+| DQ-01 | EPC | `LOCAL_AUTHORITY` code contradicts `LOCAL_AUTHORITY_LABEL` on 25 of ~1.19M certificates; 4 of those carry a Merseyside authority code despite the extract being filtered to Greater Manchester. Both fields are assessor-entered at lodgement. | Geography for every property is resolved via postcode → ONS NSPL, never from EPC's own authority fields. A dbt test in silver will assert all certificates resolve to the 10 GM authorities. |
+| DQ-02 | Land Registry | The current-year Price Paid file is republished monthly under the same filename, and `COPY INTO` skips filenames it has already loaded — even if the contents changed. | Re-downloads are date-stamped on upload; bronze stays append-only and silver dedupes on `transaction_id`. See [ADR 005](docs/decisions.md). |
+
 ## Author
 
 Nicholas Sampson — BI Developer moving into analytics engineering.
-test
