@@ -27,3 +27,4 @@ data/
 
 # Power BI local temp (commit the .pbix itself deliberately, not temp files)
 *.pbix.tmp
+dbt_internal_packages/
